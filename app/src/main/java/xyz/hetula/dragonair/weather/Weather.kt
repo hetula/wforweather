@@ -32,7 +32,7 @@ data class Weather(
     val main: MainData,
     val sys: MiscInfo
 ) {
-    fun getRealName() = NameCorrection.correctName(name)
+    fun getRealName(): String = NameCorrection.correctName(name)
 
     fun getTime() = Date(dt)
 }

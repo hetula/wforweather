@@ -4,4 +4,8 @@
     <color name="colorPrimaryDark">#4574A3</color>
     <color name="colorAccent">#1E4F94</color>'
     <color name="colorLauncherBackground">#A9D3FF</color>
+
+    <color name="notification_title">#222</color>
+    <color name="notification_content">#000</color>
+    <color name="notification_time">#777</color>
 </resources>

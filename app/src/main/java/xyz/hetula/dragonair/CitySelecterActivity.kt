@@ -1,5 +1,6 @@
 package xyz.hetula.dragonair
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
 import android.support.v7.app.AppCompatActivity
@@ -17,6 +18,14 @@ class CitySelecterActivity : AppCompatActivity() {
             mCityManager.loadCitiesSync(applicationContext)
             val end = SystemClock.elapsedRealtime()
             Log.d("TestingTimes", "Loaded cities in ${end - start} ms")
+            val testCity = mCityManager.getCity(655194) ?: return@Thread
+
+            Intent(applicationContext, DragonairService::class.java).also {
+                it.putExtra("id", testCity.id)
+                it.putExtra("name", testCity.getRealName())
+                it.putExtra("country", testCity.country)
+                startForegroundService(it)
+            }
         }.start()
     }
 }
