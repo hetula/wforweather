@@ -11,7 +11,8 @@ public class Constants {
     }
 
     public static class Pref {
-        public static final String KEY_CURRENT_CITY = "conf.CURRENT_CITY";
+        public static final String PREF_NAME = "dragonair.general";
+        public static final String KEY_CURRENT_CITY_ID = "conf.CURRENT_CITY_ID";
 
         private Pref() {
             throw new IllegalStateException("No instances");
@@ -38,6 +39,7 @@ public class Constants {
 
     public static class Intents {
         public static final String ACTION_UPDATE_WEATHER = "xyz.hetula.UPDATE_WEATHER";
+        public static final String ACTION_UPDATE_WEATHER_TIMELY = "xyz.hetula.UPDATE_WEATHER_TIMELY";
 
         private Intents() {
             throw new IllegalStateException("No instances");

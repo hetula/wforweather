@@ -6,9 +6,8 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.Volley
-import xyz.hetula.dragonair.R
 import xyz.hetula.dragonair.Constants
-import xyz.hetula.dragonair.city.City
+import xyz.hetula.dragonair.R
 import xyz.hetula.dragonair.util.GsonRequest
 import java.util.*
 
@@ -25,9 +24,9 @@ class WeatherManager {
         mReqQueue.stop()
     }
 
-    fun fetchCurrentWeather(city: City, callback: (Weather) -> Unit) {
+    fun fetchCurrentWeather(cityId: Long, callback: (Weather) -> Unit) {
         mReqQueue.add(GsonRequest(
-            currentWeatherUrl(mApiKey, city),
+            currentWeatherUrl(mApiKey, cityId),
             Weather::class.java,
             HashMap(),
             callback,
@@ -35,8 +34,8 @@ class WeatherManager {
         ))
     }
 
-    fun currentWeatherUrl(apiKey: String , city: City): String {
-        return String.format(Locale.ROOT, Constants.Api.CURRENT_WEATHER_API_URL, city.id, apiKey);
+    private fun currentWeatherUrl(apiKey: String , cityId: Long): String {
+        return String.format(Locale.ROOT, Constants.Api.CURRENT_WEATHER_API_URL, cityId, apiKey)
     }
 
     private class Err : Response.ErrorListener {

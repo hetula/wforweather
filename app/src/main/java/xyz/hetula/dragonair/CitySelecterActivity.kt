@@ -22,8 +22,6 @@ class CitySelecterActivity : AppCompatActivity() {
 
             Intent(applicationContext, DragonairService::class.java).also {
                 it.putExtra("id", testCity.id)
-                it.putExtra("name", testCity.getRealName())
-                it.putExtra("country", testCity.country)
                 startForegroundService(it)
             }
         }.start()

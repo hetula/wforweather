@@ -25,11 +25,7 @@
         </activity>
         <service
             android:name=".DragonairService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="xyz.hetula.UPDATE_WEATHER"/>
-            </intent-filter>
-        </service>
+            android:exported="false" />
     </application>
 
 </manifest>
