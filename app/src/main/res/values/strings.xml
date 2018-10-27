@@ -5,4 +5,5 @@
 
     <string name="weather_notification_title">%d° %s</string>
     <string name="weather_notification_content">%s, %s</string>
+    <string name="weather_notification_time">Measured at %s</string>
 </resources>

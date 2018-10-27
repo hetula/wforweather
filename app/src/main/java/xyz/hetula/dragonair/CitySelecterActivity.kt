@@ -3,8 +3,8 @@ package xyz.hetula.dragonair
 import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import xyz.hetula.dragonair.city.CityManager
 
 class CitySelecterActivity : AppCompatActivity() {

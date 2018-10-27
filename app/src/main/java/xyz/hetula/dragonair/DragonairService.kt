@@ -8,9 +8,11 @@ import android.content.IntentFilter
 import android.os.Binder
 import android.os.IBinder
 import android.os.SystemClock
-import android.support.v4.app.NotificationCompat
+import android.text.format.DateUtils
 import android.util.Log
-import android.widget.RemoteViews
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.app.NotificationCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.google.gson.Gson
 import xyz.hetula.dragonair.util.GsonHelper
 import xyz.hetula.dragonair.weather.Weather
@@ -197,15 +199,8 @@ class DragonairService : Service() {
         val temperature = weather.getTemperatureAsCelsius().roundToInt()
         val conditions = weather.getConditions()
 
-        val content = RemoteViews(packageName, R.layout.view_weather)
-        content.setTextViewText(R.id.weatherTitle, getString(R.string.weather_notification_content, city, country))
-        content.setTextViewText(
-            R.id.weatherTemperature,
-            getString(R.string.weather_notification_title, temperature, conditions)
-        )
         // TODO: Add conditions icon!
-        content.setImageViewResource(R.id.weatherIcon, R.drawable.ic_conditions_cloudy)
-
+        val bitmap = AppCompatResources.getDrawable(applicationContext, R.drawable.ic_conditions_cloudy)!!.toBitmap()
 
         val pendingContentIntent = PendingIntent.getBroadcast(
             applicationContext, 44,
@@ -214,9 +209,20 @@ class DragonairService : Service() {
 
         // TODO: Replace icon with temp icon!
         notification.setSmallIcon(R.drawable.ic_weather_placeholder)
-            .setCustomContentView(content)
+            .setLargeIcon(bitmap)
+            .setShowWhen(true)
+            .setContentTitle(getString(R.string.weather_notification_title, temperature, conditions))
+            .setContentText(getString(R.string.weather_notification_content, city, country))
+            .setCategory(NotificationCompat.CATEGORY_REMINDER)
+            .setWhen(System.currentTimeMillis())
             .setOngoing(true)
             .setContentIntent(pendingContentIntent)
+
+        val date = weather?.dt ?: -1L
+        if(date != -1L) {
+            val formattedTime = DateUtils.formatDateTime(applicationContext, date, DateUtils.FORMAT_SHOW_TIME)
+            notification.setSubText(getString(R.string.weather_notification_time, formattedTime))
+        }
 
         if (weather == null) {
             notification.priority = NotificationManager.IMPORTANCE_LOW
