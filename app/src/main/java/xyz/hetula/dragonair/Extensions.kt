@@ -12,3 +12,7 @@ fun Weather?.getConditions(): String {
     val currentConditions: WeatherData = this?.weather?.getOrNull(0) ?: return ""
     return currentConditions.main
 }
+
+fun Weather?.getFirstWeatherData(): WeatherData? {
+    return this?.weather?.getOrNull(0)
+}

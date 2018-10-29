@@ -23,9 +23,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service
-            android:name=".DragonairService"
-            android:exported="false" />
+        <receiver
+            android:name=".DragonairUpdater"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="xyz.hetula.UPDATE_WEATHER_TIMELY"/>
+                <action android:name="xyz.hetula.UPDATE_WEATHER"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
