@@ -4,6 +4,7 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
+import android.text.format.DateUtils
 import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.NotificationCompat
@@ -196,28 +197,28 @@ object Dragonair {
         val notification = NotificationCompat.Builder(context, Constants.Notification.WEATHER_CHANNEL_ID)
 
         val city = weather?.getRealName() ?: "-"
-        val country = weather?.sys?.country ?: "-"
         val temperature = weather.getTemperatureAsCelsius().roundToInt()
         val conditions = weather.getConditions()
         val weatherData = weather.getFirstWeatherData()
         val weatherDesc = (weatherData?.description ?: "").capitalize()
+        val timeOfMeasurement =
+            DateUtils.formatDateTime(context, getMeasurementTimeInMs(weather), DateUtils.FORMAT_SHOW_TIME)
 
         val night = isNight(now.get(Calendar.HOUR_OF_DAY))
         val weatherConditionsIconRes = WeatherIconMapper.mapWeatherToIconRes(weatherData?.icon, night)
         val bitmap = AppCompatResources.getDrawable(context, weatherConditionsIconRes)!!.toBitmap()
 
-        val pendingContentIntent = PendingIntent.getBroadcast(
-            context, 44,
-            Intent(Constants.Intents.ACTION_UPDATE_WEATHER), PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        val pendingContentIntent = Intent(context, DragonairUpdater::class.java).let {
+            it.action = Constants.Intents.ACTION_UPDATE_WEATHER
+            PendingIntent.getBroadcast(context, 44, it, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
 
         val smallIcon = WeatherIconMapper.mapTemperatureToIconRes(temperature)
         notification.setSmallIcon(smallIcon)
             .setLargeIcon(bitmap)
-            .setShowWhen(true)
             .setContentTitle(context.getString(R.string.weather_notification_title, temperature, conditions))
             .setContentText(weatherDesc)
-            .setSubText(context.getString(R.string.weather_notification_content, city, country))
+            .setSubText(context.getString(R.string.weather_notification_content, city, timeOfMeasurement))
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .setWhen(System.currentTimeMillis())
             .setOngoing(true)
@@ -235,6 +236,11 @@ object Dragonair {
         }
 
         return notification.build()
+    }
+
+    private fun getMeasurementTimeInMs(weather: Weather?): Long {
+        val dt = weather?.dt ?: return System.currentTimeMillis()
+        return dt * 1000
     }
 
     private fun isInDoNotDisturbTime(now: Calendar): Boolean {

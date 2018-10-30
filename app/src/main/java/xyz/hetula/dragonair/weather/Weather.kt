@@ -8,7 +8,7 @@ import java.util.*
  * @param id City ID
  * @param name City name
  * @param cod Internal parameter
- * @param dt Time of data calculation, unix, UTC
+ * @param dt Time of data calculation, unix, UTC (Seconds)
  * @param visibility Visibility, meter
  * @param base Internal parameter
  * @param coord City coordinates
