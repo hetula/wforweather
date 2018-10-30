@@ -18,6 +18,7 @@ class WeatherManager {
     fun initialize(context: Context) {
         mApiKey = context.getString(R.string.api_key)
         mReqQueue = Volley.newRequestQueue(context.applicationContext)
+
     }
 
     fun close() {

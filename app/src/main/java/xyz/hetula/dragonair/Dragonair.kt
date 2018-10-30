@@ -3,6 +3,7 @@ package xyz.hetula.dragonair
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.os.PowerManager
 import android.os.SystemClock
 import android.text.format.DateUtils
 import android.util.Log
@@ -28,7 +29,9 @@ object Dragonair {
     private lateinit var mNotificationManager: NotificationManager
     private lateinit var mAlarmManager: AlarmManager
     private lateinit var mLastWeatherFile: File
+    private lateinit var mOperationWakeLock: PowerManager.WakeLock
 
+    private var mWakeLockReleaseTimeout: Long = TimeUnit.SECONDS.toMillis(2L)
     private var mMinApiQueryTime: Long = TimeUnit.MINUTES.toMillis(10L)
     private var mUpdateIntervalMillis: Long = TimeUnit.MINUTES.toMillis(60L)
     private var mUpdateWindowMillis: Long = TimeUnit.MINUTES.toMillis(15L)
@@ -49,6 +52,8 @@ object Dragonair {
         val context = providedContext.applicationContext
         mInitialized = true
         mWeatherManager.initialize(context)
+        val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        mOperationWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "dragonair:weatherupdate")
 
         mLastWeatherFile = File(context.applicationContext.cacheDir, "last_weather")
         mWeatherManager.initialize(context.applicationContext)
@@ -97,11 +102,14 @@ object Dragonair {
     fun fetchCurrentCityWeatherAndAllocateNewSchelude(providedContext: Context) {
         val context = providedContext.applicationContext
         Log.d(TAG, "fetchCurrentCityWeatherAndAllocateNewSchelude called")
+        // Don't care about releasing, 2 seconds is ok to hold every 1 hour cycle.
+        mOperationWakeLock.acquire(mWakeLockReleaseTimeout)
         fetchCurrentCityWeather(context)
         allocateNewScheduledUpdate(context)
     }
 
     fun fetchCurrentCityWeather(providedContext: Context) {
+        // TODO Network state?
         val context = providedContext.applicationContext
         Log.d(TAG, "fetchCurrentCityWeather called")
         val city = mCurrentCityId
