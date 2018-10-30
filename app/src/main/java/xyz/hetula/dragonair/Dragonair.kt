@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.google.gson.Gson
 import xyz.hetula.dragonair.util.GsonHelper
+import xyz.hetula.dragonair.util.WeatherIconMapper
 import xyz.hetula.dragonair.weather.Weather
 import xyz.hetula.dragonair.weather.WeatherManager
 import java.io.*
@@ -36,10 +37,10 @@ object Dragonair {
     private var mCurrentCityId: Long = -1L
 
     fun initialize(providedContext: Context) {
-        if(mDestroyed) {
+        if (mDestroyed) {
             throw IllegalStateException("Dragonair instance has died, so should the caller...")
         }
-        if(mInitialized) {
+        if (mInitialized) {
             Log.w(TAG, "DragonairInstance up and running")
             return
         }
@@ -65,7 +66,7 @@ object Dragonair {
     }
 
     fun release() {
-        if(!mInitialized) {
+        if (!mInitialized) {
             Log.d(TAG, "DragonairInstance release without init!")
             return
         }
@@ -78,7 +79,7 @@ object Dragonair {
     fun setCityIdIfNotPresent(providedContext: Context, newCityId: Long) {
         val context = providedContext.applicationContext
         Log.d(TAG, "Trying to set City Id: $newCityId")
-        if(mCurrentCityId == -1L) {
+        if (mCurrentCityId == -1L) {
             mCurrentCityId = newCityId
             storeCurrentCityId(context, mCurrentCityId)
             if (mCurrentCityId != -1L && mLastWeather == null) {
@@ -88,7 +89,7 @@ object Dragonair {
                 Log.w(TAG, "Not fetching weather! City ID [id: $mCurrentCityId] or Weather [w: $mLastWeather]!")
             }
         } else {
-            Log.d(TAG,"City Id already set to $mCurrentCityId, not setting new")
+            Log.d(TAG, "City Id already set to $mCurrentCityId, not setting new")
         }
     }
 
@@ -165,7 +166,7 @@ object Dragonair {
     private fun readCurrentCityId(context: Context) {
         mCurrentCityId = context.getSharedPreferences(Constants.Pref.PREF_NAME, Context.MODE_PRIVATE)
             .getLong(Constants.Pref.KEY_CURRENT_CITY_ID, -1L)
-        if(mCurrentCityId == -1L) {
+        if (mCurrentCityId == -1L) {
             Log.w(TAG, "No city id set!")
         } else {
             Log.d(TAG, "Read City Id: $mCurrentCityId")
@@ -191,24 +192,27 @@ object Dragonair {
     }
 
     private fun createNotification(context: Context, weather: Weather?): Notification {
+        val now = Calendar.getInstance()
         val notification = NotificationCompat.Builder(context, Constants.Notification.WEATHER_CHANNEL_ID)
 
         val city = weather?.getRealName() ?: "-"
         val country = weather?.sys?.country ?: "-"
         val temperature = weather.getTemperatureAsCelsius().roundToInt()
         val conditions = weather.getConditions()
-        val weatherDesc = (weather.getFirstWeatherData()?.description ?: "").capitalize()
+        val weatherData = weather.getFirstWeatherData()
+        val weatherDesc = (weatherData?.description ?: "").capitalize()
 
-        // TODO: Add conditions icon!
-        val bitmap = AppCompatResources.getDrawable(context, R.drawable.ic_conditions_cloudy)!!.toBitmap()
+        val night = isNight(now.get(Calendar.HOUR_OF_DAY))
+        val weatherConditionsIconRes = WeatherIconMapper.mapWeatherToIconRes(weatherData?.icon, night)
+        val bitmap = AppCompatResources.getDrawable(context, weatherConditionsIconRes)!!.toBitmap()
 
         val pendingContentIntent = PendingIntent.getBroadcast(
             context, 44,
             Intent(Constants.Intents.ACTION_UPDATE_WEATHER), PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        // TODO: Replace icon with temp icon!
-        notification.setSmallIcon(R.drawable.ic_weather_placeholder)
+        val smallIcon = WeatherIconMapper.mapTemperatureToIconRes(temperature)
+        notification.setSmallIcon(smallIcon)
             .setLargeIcon(bitmap)
             .setShowWhen(true)
             .setContentTitle(context.getString(R.string.weather_notification_title, temperature, conditions))
@@ -224,7 +228,7 @@ object Dragonair {
         }
 
 
-        if(isInDoNotDisturbTime()) { // Silent night!
+        if (isInDoNotDisturbTime(now)) { // Silent night!
             Log.d(TAG, "Night time! Lets be silent :)")
             notification.setSound(null)
             notification.setOnlyAlertOnce(true)
@@ -233,16 +237,14 @@ object Dragonair {
         return notification.build()
     }
 
-    private fun isInDoNotDisturbTime(): Boolean {
-        val now = Calendar.getInstance()
-
+    private fun isInDoNotDisturbTime(now: Calendar): Boolean {
         val dayOfWeek = now.get(Calendar.DAY_OF_WEEK)
         val isWeekend = dayOfWeek == Calendar.SUNDAY || dayOfWeek == Calendar.SATURDAY
 
         val nightStart: Int
         val nightEnd: Int
 
-        if(isWeekend) {
+        if (isWeekend) {
             nightStart = 23
             nightEnd = 9
         } else {
@@ -253,6 +255,10 @@ object Dragonair {
         val currentHour = now.get(Calendar.HOUR_OF_DAY)
         Log.d(TAG, "Weekend[$isWeekend] Current hour[$currentHour] Night[$nightStart-$nightEnd]")
         return currentHour > nightStart || currentHour < nightEnd
+    }
+
+    private fun isNight(hour: Int): Boolean {
+        return hour > 19 || hour < 6
     }
 
 }
