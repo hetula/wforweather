@@ -13,7 +13,10 @@ class DragonairUpdater : BroadcastReceiver() {
         Log.d(TAG, "Intent: $intent")
         val action = intent?.action ?: return
 
-        Dragonair.setCityIdIfNotPresent(context, intent.getLongExtra("id", -1))
+        val cityId = intent.getLongExtra("id", -1)
+        if(cityId != -1L) {
+            Dragonair.setCityIdIfNotPresent(context, cityId)
+        }
         when (action) {
             Constants.Intents.ACTION_UPDATE_WEATHER -> {
                 Log.d(TAG, "Received update request!")

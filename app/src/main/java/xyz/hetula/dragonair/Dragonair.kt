@@ -13,6 +13,7 @@ import xyz.hetula.dragonair.util.GsonHelper
 import xyz.hetula.dragonair.weather.Weather
 import xyz.hetula.dragonair.weather.WeatherManager
 import java.io.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
@@ -105,7 +106,8 @@ object Dragonair {
             Log.w(TAG, "No current city id set! Can't fetch data!")
         } else {
             if (isTooSoon()) {
-                Log.w(TAG, "Data request too soon! Skipping :)")
+                Log.w(TAG, "Data request too soon! Refreshing with old data :)")
+                updateNotication(context, mLastWeather)
                 return
             }
             mWeatherManager.fetchCurrentWeather(city) {
@@ -136,10 +138,9 @@ object Dragonair {
             PendingIntent.getBroadcast(context, 45, it, 0)
         }
         val alarmTimeStart = SystemClock.elapsedRealtime() + mUpdateIntervalMillis
-        mAlarmManager.setWindow(
+        mAlarmManager.setAndAllowWhileIdle(
             AlarmManager.ELAPSED_REALTIME_WAKEUP,
             alarmTimeStart,
-            mUpdateWindowMillis,
             updateIntent
         )
     }
@@ -181,7 +182,7 @@ object Dragonair {
         }
     }
 
-    private fun updateNotication(context: Context, weather: Weather) {
+    private fun updateNotication(context: Context, weather: Weather?) {
         mNotificationManager.notify(
             Constants.Notification.WEATHER_NOTIFICATION_ID,
             createNotification(context, weather)
@@ -221,7 +222,36 @@ object Dragonair {
             notification.priority = NotificationManager.IMPORTANCE_LOW
         }
 
+
+        if(isInDoNotDisturbTime()) { // Silent night!
+            Log.d(TAG, "Night time! Lets be silent :)")
+            notification.setSound(null)
+            notification.setOnlyAlertOnce(true)
+        }
+
         return notification.build()
+    }
+
+    private fun isInDoNotDisturbTime(): Boolean {
+        val now = Calendar.getInstance()
+
+        val dayOfWeek = now.get(Calendar.DAY_OF_WEEK)
+        val isWeekend = dayOfWeek == Calendar.SUNDAY || dayOfWeek == Calendar.SATURDAY
+
+        val nightStart: Int
+        val nightEnd: Int
+
+        if(isWeekend) {
+            nightStart = 23
+            nightEnd = 9
+        } else {
+            nightStart = 22
+            nightEnd = 7
+        }
+
+        val currentHour = now.get(Calendar.HOUR_OF_DAY)
+        Log.d(TAG, "Weekend[$isWeekend] Current hour[$currentHour] Night[$nightStart-$nightEnd]")
+        return currentHour > nightStart || currentHour < nightEnd
     }
 
 }

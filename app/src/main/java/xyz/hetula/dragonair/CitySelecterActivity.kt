@@ -34,9 +34,9 @@ class CitySelecterActivity : AppCompatActivity() {
             PendingIntent.getBroadcast(applicationContext, 0, it, PendingIntent.FLAG_UPDATE_CURRENT)
         }.also {
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.set(
+            alarmManager.setAndAllowWhileIdle(
                 AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + 1000,
+                SystemClock.elapsedRealtime() + 100,
                 it
             )
         }
