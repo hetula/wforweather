@@ -27,6 +27,7 @@ object Dragonair {
     private lateinit var mAlarmManager: AlarmManager
     private lateinit var mLastWeatherFile: File
 
+    private var mMinApiQueryTime: Long = TimeUnit.MINUTES.toMillis(10L)
     private var mUpdateIntervalMillis: Long = TimeUnit.MINUTES.toMillis(60L)
     private var mUpdateWindowMillis: Long = TimeUnit.MINUTES.toMillis(15L)
 
@@ -128,7 +129,7 @@ object Dragonair {
         Log.d(TAG, "Got last weather, check fetch time!")
         val now = SystemClock.elapsedRealtime()
         val diff = now - mLastWeatherFetch
-        return diff < 10 * 60_000 // 10 mins
+        return diff < mMinApiQueryTime
     }
 
     private fun allocateNewScheduledUpdate(context: Context) {
