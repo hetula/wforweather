@@ -17,7 +17,7 @@ class WeatherManager {
     private lateinit var mReqQueue: RequestQueue
 
     fun initialize(context: Context) {
-        if(!mInitialized) {
+        if (!mInitialized) {
             mApiKey = context.getString(R.string.api_key)
             mReqQueue = Volley.newRequestQueue(context.applicationContext)
             mInitialized = true
@@ -25,27 +25,29 @@ class WeatherManager {
     }
 
     fun close() {
-        if(mInitialized) {
+        if (mInitialized) {
             mReqQueue.stop()
             mInitialized = false
         }
     }
 
     fun fetchCurrentWeather(cityId: Long, callback: (Weather) -> Unit) {
-        if(!mInitialized) {
+        if (!mInitialized) {
             Log.e(TAG, "Not initialized, no weather")
             return
         }
-        mReqQueue.add(GsonRequest(
-            currentWeatherUrl(mApiKey, cityId),
-            Weather::class.java,
-            HashMap(),
-            callback,
-            Err()
-        ))
+        mReqQueue.add(
+            GsonRequest(
+                currentWeatherUrl(mApiKey, cityId),
+                Weather::class.java,
+                HashMap(),
+                callback,
+                Err()
+            )
+        )
     }
 
-    private fun currentWeatherUrl(apiKey: String , cityId: Long): String {
+    private fun currentWeatherUrl(apiKey: String, cityId: Long): String {
         return String.format(Locale.ROOT, Constants.Api.CURRENT_WEATHER_API_URL, cityId, apiKey)
     }
 

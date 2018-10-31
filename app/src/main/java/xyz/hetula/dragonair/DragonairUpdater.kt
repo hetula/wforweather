@@ -13,13 +13,13 @@ class DragonairUpdater : BroadcastReceiver() {
         Log.d(TAG, "Intent: $intent")
         val action = intent?.action ?: return
 
-        if(Dragonair.isNotReady()) {
+        if (Dragonair.isNotReady()) {
             Log.w(TAG, "Dragonair instance not ready! Initializing!")
             Dragonair.initialize(context)
         }
 
         val cityId = intent.getLongExtra("id", -1)
-        if(cityId != -1L) {
+        if (cityId != -1L) {
             Dragonair.setCityIdIfNotPresent(context, cityId)
         }
         when (action) {

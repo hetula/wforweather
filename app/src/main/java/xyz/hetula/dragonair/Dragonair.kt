@@ -277,7 +277,7 @@ object Dragonair {
     }
 
     private inline fun ensureDragonairReady(function: () -> Unit) {
-        if(mInitialized) {
+        if (mInitialized) {
             function()
         } else {
             Log.w(TAG, "Dragonair instance is not initialized! Init now!")

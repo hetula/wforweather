@@ -8,6 +8,7 @@ import java.util.Map;
  */
 public class NameCorrection {
     private static final Map<String, String> sCorrections = new HashMap<>();
+
     static {
         sCorrections.put("Jyvaeskylae", "Jyväskylä");
     }

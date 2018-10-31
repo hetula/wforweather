@@ -2,8 +2,8 @@ package xyz.hetula.dragonair.city
 
 import android.content.Context
 import com.google.gson.Gson
-import xyz.hetula.dragonair.util.GsonHelper
 import xyz.hetula.dragonair.R
+import xyz.hetula.dragonair.util.GsonHelper
 import java.io.BufferedReader
 import java.io.InputStreamReader
 

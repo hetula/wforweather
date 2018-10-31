@@ -4,7 +4,7 @@
     package="xyz.hetula.dragonair">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -27,8 +27,8 @@
             android:name=".DragonairUpdater"
             android:exported="false">
             <intent-filter>
-                <action android:name="xyz.hetula.UPDATE_WEATHER_TIMELY"/>
-                <action android:name="xyz.hetula.UPDATE_WEATHER"/>
+                <action android:name="xyz.hetula.UPDATE_WEATHER_TIMELY" />
+                <action android:name="xyz.hetula.UPDATE_WEATHER" />
             </intent-filter>
         </receiver>
     </application>
