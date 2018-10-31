@@ -3,6 +3,8 @@ package xyz.hetula.dragonair
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.os.PowerManager
 import android.os.SystemClock
 import android.text.format.DateUtils
@@ -24,32 +26,31 @@ object Dragonair {
     private const val TAG = "DragonairInstance"
     private val mWeatherManager: WeatherManager = WeatherManager()
     private var mInitialized: Boolean = false
-    private var mDestroyed: Boolean = false
 
     private lateinit var mNotificationManager: NotificationManager
     private lateinit var mAlarmManager: AlarmManager
     private lateinit var mLastWeatherFile: File
     private lateinit var mOperationWakeLock: PowerManager.WakeLock
+    private lateinit var mHandler: Handler
 
     private var mWakeLockReleaseTimeout: Long = TimeUnit.SECONDS.toMillis(2L)
     private var mMinApiQueryTime: Long = TimeUnit.MINUTES.toMillis(10L)
     private var mUpdateIntervalMillis: Long = TimeUnit.MINUTES.toMillis(60L)
-    private var mUpdateWindowMillis: Long = TimeUnit.MINUTES.toMillis(15L)
 
     private var mLastWeather: Weather? = null
     private var mLastWeatherFetch: Long = -1L
     private var mCurrentCityId: Long = -1L
 
+    fun isNotReady() = !mInitialized
+
     fun initialize(providedContext: Context) {
-        if (mDestroyed) {
-            throw IllegalStateException("Dragonair instance has died, so should the caller...")
-        }
         if (mInitialized) {
             Log.w(TAG, "DragonairInstance up and running")
             return
         }
         Log.d(TAG, "DragonairInstance initialized!")
         val context = providedContext.applicationContext
+        mHandler = Handler(Looper.getMainLooper())
         mInitialized = true
         mWeatherManager.initialize(context)
         val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -71,18 +72,13 @@ object Dragonair {
         readLastWeather()
     }
 
-    fun release() {
-        if (!mInitialized) {
-            Log.d(TAG, "DragonairInstance release without init!")
-            return
-        }
+    fun release() = ensureDragonairReady {
         Log.d(TAG, "DragonairInstance released!")
         mNotificationManager.cancelAll()
         mWeatherManager.close()
-        mDestroyed = true
     }
 
-    fun setCityIdIfNotPresent(providedContext: Context, newCityId: Long) {
+    fun setCityIdIfNotPresent(providedContext: Context, newCityId: Long) = ensureDragonairReady {
         val context = providedContext.applicationContext
         Log.d(TAG, "Trying to set City Id: $newCityId")
         if (mCurrentCityId == -1L) {
@@ -99,16 +95,16 @@ object Dragonair {
         }
     }
 
-    fun fetchCurrentCityWeatherAndAllocateNewSchelude(providedContext: Context) {
+    fun fetchCurrentCityWeatherAndAllocateNewSchelude(providedContext: Context) = ensureDragonairReady {
         val context = providedContext.applicationContext
         Log.d(TAG, "fetchCurrentCityWeatherAndAllocateNewSchelude called")
         // Don't care about releasing, 2 seconds is ok to hold every 1 hour cycle.
         mOperationWakeLock.acquire(mWakeLockReleaseTimeout)
-        fetchCurrentCityWeather(context)
         allocateNewScheduledUpdate(context)
+        fetchCurrentCityWeather(context)
     }
 
-    fun fetchCurrentCityWeather(providedContext: Context) {
+    fun fetchCurrentCityWeather(providedContext: Context) = ensureDragonairReady {
         // TODO Network state?
         val context = providedContext.applicationContext
         Log.d(TAG, "fetchCurrentCityWeather called")
@@ -194,10 +190,15 @@ object Dragonair {
     }
 
     private fun updateNotication(context: Context, weather: Weather?) {
-        mNotificationManager.notify(
-            Constants.Notification.WEATHER_NOTIFICATION_ID,
-            createNotification(context, weather)
-        )
+        mNotificationManager.cancel(Constants.Notification.WEATHER_NOTIFICATION_ID)
+        mOperationWakeLock.acquire(200) // Keep WakeLock to let handler notify again
+        // Post Notification to ensure ambient update for screen.
+        mHandler.post {
+            mNotificationManager.notify(
+                Constants.Notification.WEATHER_NOTIFICATION_ID,
+                createNotification(context, weather)
+            )
+        }
     }
 
     private fun createNotification(context: Context, weather: Weather?): Notification {
@@ -273,6 +274,14 @@ object Dragonair {
 
     private fun isNight(hour: Int): Boolean {
         return hour > 19 || hour < 6
+    }
+
+    private inline fun ensureDragonairReady(function: () -> Unit) {
+        if(mInitialized) {
+            function()
+        } else {
+            Log.w(TAG, "Dragonair instance is not initialized! Init now!")
+        }
     }
 
 }
