@@ -1,7 +1,5 @@
 package xyz.hetula.dragonair.weather
 
-import java.util.*
-
 /**
  * @param type Internal parameter
  * @param id Internal parameter
@@ -17,8 +15,4 @@ data class MiscInfo(
     val country: String,
     val sunrise: Long,
     val sunset: Long
-) {
-    fun getSunriseTime() = Date(sunrise)
-
-    fun getSunsetTime() = Date(sunset)
-}
+)

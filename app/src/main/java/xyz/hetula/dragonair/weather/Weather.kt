@@ -2,7 +2,6 @@ package xyz.hetula.dragonair.weather
 
 import xyz.hetula.dragonair.city.Coordinate
 import xyz.hetula.dragonair.util.NameCorrection
-import java.util.*
 
 /**
  * @param id City ID
@@ -33,6 +32,4 @@ data class Weather(
     val sys: MiscInfo
 ) {
     fun getRealName(): String = NameCorrection.correctName(name)
-
-    fun getTime() = Date(dt)
 }

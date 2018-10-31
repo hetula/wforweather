@@ -13,6 +13,7 @@ public class NameCorrection {
         sCorrections.put("Jyvaeskylae", "Jyväskylä");
     }
 
+    @SuppressWarnings("UnusedReturnValue") // Kotlin uses, lint is bad at detecting this.
     public static String correctName(String originalName) {
         return sCorrections.getOrDefault(originalName, originalName);
     }

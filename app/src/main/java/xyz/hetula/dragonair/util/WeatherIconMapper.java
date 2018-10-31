@@ -13,6 +13,7 @@ public class WeatherIconMapper {
 
 
     @DrawableRes
+    @SuppressWarnings("UnusedReturnValue") // Kotlin uses, lint is bad at detecting this.
     public static int mapWeatherToIconRes(@Nullable String weatherCondition, boolean night) {
         if (weatherCondition == null || weatherCondition.isEmpty()) {
             return R.drawable.ic_weather_icon_missing;
@@ -49,6 +50,7 @@ public class WeatherIconMapper {
     }
 
     @DrawableRes
+    @SuppressWarnings("UnusedReturnValue") // Kotlin uses, lint is bad at detecting this.
     public static int mapTemperatureToIconRes(int currentTempCelsius) {
         switch (currentTempCelsius) {
             case -2:

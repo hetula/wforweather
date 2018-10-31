@@ -12,14 +12,6 @@ enum class Condition(private val iconId: String) {
     SNOW("13"),
     MIST("50");
 
-    fun getIconId(isNight: Boolean): String {
-        return if (isNight) {
-            "{$iconId}n"
-        } else {
-            "{$iconId}d"
-        }
-    }
-
     fun matches(weatherCondition: String): Boolean {
         return weatherCondition.startsWith(iconId)
     }

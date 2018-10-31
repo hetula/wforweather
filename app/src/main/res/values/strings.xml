@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name">Dragonair</string>
 
-    <string name="channel_name">Weather Notification</string>
+    <string name="channel_name">Ongoing Weather</string>
 
     <string name="weather_notification_title">%d° %s</string>
     <string name="weather_notification_content">%s at %s</string>
-    <string name="weather_notification_time">Measured at %s</string>
 </resources>

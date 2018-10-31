@@ -15,11 +15,13 @@ import java.util.List;
  */
 public class GsonHelper {
 
+    @SuppressWarnings("UnusedReturnValue") // Kotlin uses, lint is bad at detecting this.
     public static List<City> readCities(Gson gsonInstance, BufferedReader data) {
         City[] cities = gsonInstance.fromJson(data, City[].class);
         return Arrays.asList(cities);
     }
 
+    @SuppressWarnings("UnusedReturnValue") // Kotlin uses, lint is bad at detecting this.
     public static Weather readWeather(Gson gsonInstance, BufferedReader data) {
         return gsonInstance.fromJson(data, Weather.class);
     }
