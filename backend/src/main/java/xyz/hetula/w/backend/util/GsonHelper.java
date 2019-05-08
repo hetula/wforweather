@@ -1,4 +1,4 @@
-package xyz.hetula.w.util;
+package xyz.hetula.w.backend.util;
 
 import com.google.gson.Gson;
 import xyz.hetula.w.api.city.City;

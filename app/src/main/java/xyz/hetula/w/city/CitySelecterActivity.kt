@@ -1,4 +1,4 @@
-package xyz.hetula.w
+package xyz.hetula.w.city
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -8,14 +8,18 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import xyz.hetula.w.city.CityManager
+import xyz.hetula.w.R
+import xyz.hetula.w.weather.Weather
+import xyz.hetula.w.weather.WeatherUpdateReceiver
+import xyz.hetula.w.util.Constants
+import xyz.hetula.w.backend.city.OpenWeatherCityManager
 
 class CitySelecterActivity : AppCompatActivity() {
-    private val mCityManager: CityManager = CityManager()
+    private val mCityManager: OpenWeatherCityManager = OpenWeatherCityManager()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        W.initialize(applicationContext)
+        Weather.initialize(applicationContext)
         setContentView(R.layout.activity_city_selecter)
         Thread {
             val start = SystemClock.elapsedRealtime()
@@ -28,7 +32,7 @@ class CitySelecterActivity : AppCompatActivity() {
     }
 
     private fun scheludeFirst(cityId: Long) {
-        Intent(applicationContext, WUpdater::class.java).let {
+        Intent(applicationContext, WeatherUpdateReceiver::class.java).let {
             it.action = Constants.Intents.ACTION_UPDATE_WEATHER_TIMELY
             it.putExtra("id", cityId)
             PendingIntent.getBroadcast(applicationContext, 0, it, PendingIntent.FLAG_UPDATE_CURRENT)

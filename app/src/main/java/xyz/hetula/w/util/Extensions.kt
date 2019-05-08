@@ -1,4 +1,4 @@
-package xyz.hetula.w
+package xyz.hetula.w.util
 
 import xyz.hetula.w.api.weather.Weather
 import xyz.hetula.w.api.weather.WeatherData

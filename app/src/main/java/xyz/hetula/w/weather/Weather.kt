@@ -1,4 +1,4 @@
-package xyz.hetula.w
+package xyz.hetula.w.weather
 
 import android.app.*
 import android.content.Context
@@ -13,18 +13,19 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.NotificationCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.google.gson.Gson
-import xyz.hetula.w.util.GsonHelper
-import xyz.hetula.w.util.WeatherIconMapper
+import xyz.hetula.w.R
+import xyz.hetula.w.backend.util.GsonHelper
 import xyz.hetula.w.api.weather.Weather
-import xyz.hetula.w.weather.WeatherManager
+import xyz.hetula.w.backend.weather.OpenWeatherBackend
+import xyz.hetula.w.util.*
 import java.io.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
-object W {
+object Weather {
     private const val TAG = "WInstance"
-    private val mWeatherManager: WeatherManager = WeatherManager()
+    private val mWeatherManager: OpenWeatherBackend = OpenWeatherBackend()
     private var mInitialized: Boolean = false
 
     private lateinit var mNotificationManager: NotificationManager
@@ -85,24 +86,34 @@ object W {
             mCurrentCityId = newCityId
             storeCurrentCityId(context, mCurrentCityId)
             if (mCurrentCityId != -1L && mLastWeather == null) {
-                Log.d(TAG, "City Id set to $mCurrentCityId, fetching weather!")
+                Log.d(
+                    TAG,
+                    "City Id set to $mCurrentCityId, fetching weather!"
+                )
                 fetchCurrentCityWeather(context)
             } else {
-                Log.w(TAG, "Not fetching weather! City ID [id: $mCurrentCityId] or Weather [w: $mLastWeather]!")
+                Log.w(
+                    TAG,
+                    "Not fetching weather! City ID [id: $mCurrentCityId] or Weather [w: $mLastWeather]!"
+                )
             }
         } else {
-            Log.d(TAG, "City Id already set to $mCurrentCityId, not setting new")
+            Log.d(
+                TAG,
+                "City Id already set to $mCurrentCityId, not setting new"
+            )
         }
     }
 
-    fun fetchCurrentCityWeatherAndAllocateNewSchelude(providedContext: Context) = ensureWReady {
-        val context = providedContext.applicationContext
-        Log.d(TAG, "fetchCurrentCityWeatherAndAllocateNewSchelude called")
-        // Don't care about releasing, 2 seconds is ok to hold every 1 hour cycle.
-        mOperationWakeLock.acquire(mWakeLockReleaseTimeout)
-        allocateNewScheduledUpdate(context)
-        fetchCurrentCityWeather(context)
-    }
+    fun fetchCurrentCityWeatherAndAllocateNewSchelude(providedContext: Context) =
+        ensureWReady {
+            val context = providedContext.applicationContext
+            Log.d(TAG, "fetchCurrentCityWeatherAndAllocateNewSchelude called")
+            // Don't care about releasing, 2 seconds is ok to hold every 1 hour cycle.
+            mOperationWakeLock.acquire(mWakeLockReleaseTimeout)
+            allocateNewScheduledUpdate(context)
+            fetchCurrentCityWeather(context)
+        }
 
     fun fetchCurrentCityWeather(providedContext: Context) = ensureWReady {
         // TODO Network state?
@@ -140,7 +151,7 @@ object W {
 
     private fun allocateNewScheduledUpdate(context: Context) {
         Log.d(TAG, "allocateNewScheduledUpdate called")
-        val updateIntent = Intent(context, WUpdater::class.java).let {
+        val updateIntent = Intent(context, WeatherUpdateReceiver::class.java).let {
             it.action = Constants.Intents.ACTION_UPDATE_WEATHER_TIMELY
             PendingIntent.getBroadcast(context, 45, it, 0)
         }
@@ -217,7 +228,7 @@ object W {
         val weatherConditionsIconRes = WeatherIconMapper.mapWeatherToIconRes(weatherData?.icon, night)
         val bitmap = AppCompatResources.getDrawable(context, weatherConditionsIconRes)!!.toBitmap()
 
-        val pendingContentIntent = Intent(context, WUpdater::class.java).let {
+        val pendingContentIntent = Intent(context, WeatherUpdateReceiver::class.java).let {
             it.action = Constants.Intents.ACTION_UPDATE_WEATHER
             PendingIntent.getBroadcast(context, 44, it, PendingIntent.FLAG_UPDATE_CURRENT)
         }
@@ -280,7 +291,7 @@ object W {
         if (mInitialized) {
             function()
         } else {
-            Log.w(TAG, "W instance is not initialized! Init now!")
+            Log.w(TAG, "Weather instance is not initialized! Init now!")
         }
     }
 

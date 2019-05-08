@@ -1,23 +1,23 @@
-package xyz.hetula.w.ui
+package xyz.hetula.w
 
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import xyz.hetula.w.W
-import xyz.hetula.w.R
-import xyz.hetula.w.city.CityManager
+import xyz.hetula.w.backend.city.OpenWeatherCityManager
+import xyz.hetula.w.overview.OverviewFragment
+import xyz.hetula.w.weather.Weather
 import java.lang.ref.WeakReference
 
 class MainActivity : AppCompatActivity() {
-    private val mCityManager = CityManager()
+    private val mCityManager = OpenWeatherCityManager()
     private var mLoadingDone: Boolean = false
 
     private var mCityLoadTask: CityLoadTask? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        W.initialize(applicationContext)
+        Weather.initialize(applicationContext)
         setContentView(R.layout.activity_main)
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, OverviewFragment())

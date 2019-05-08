@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name="xyz.hetula.w.ui.MainActivity"
+            android:name="xyz.hetula.w.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,11 +26,11 @@
         </activity>
 
         <activity
-            android:name="xyz.hetula.w.CitySelecterActivity"
+            android:name="xyz.hetula.w.city.CitySelecterActivity"
             android:screenOrientation="portrait" />
 
         <receiver
-            android:name="xyz.hetula.w.WUpdater"
+            android:name="xyz.hetula.w.weather.WeatherUpdateReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="xyz.hetula.UPDATE_WEATHER_TIMELY" />

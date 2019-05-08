@@ -1,4 +1,4 @@
-package xyz.hetula.w.ui
+package xyz.hetula.w.overview
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -13,12 +13,13 @@ import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_overview.view.*
-import xyz.hetula.w.Constants
-import xyz.hetula.w.WUpdater
+import xyz.hetula.w.util.Constants
+import xyz.hetula.w.weather.WeatherUpdateReceiver
 import xyz.hetula.w.R
+import xyz.hetula.w.util.BaseFragment
 import xyz.hetula.w.api.util.NameCorrection
 
-class OverviewFragment : WFragment() {
+class OverviewFragment : BaseFragment() {
     private lateinit var mAlarmManager: AlarmManager
 
     private lateinit var mFabSelectCity: FloatingActionButton
@@ -48,7 +49,7 @@ class OverviewFragment : WFragment() {
     }
 
     private fun scheludeFirst(cityId: Long) {
-        Intent(context!!.applicationContext, WUpdater::class.java).let {
+        Intent(context!!.applicationContext, WeatherUpdateReceiver::class.java).let {
             it.action = Constants.Intents.ACTION_UPDATE_WEATHER_TIMELY
             it.putExtra("id", cityId)
             PendingIntent.getBroadcast(context!!.applicationContext, 0, it, PendingIntent.FLAG_UPDATE_CURRENT)

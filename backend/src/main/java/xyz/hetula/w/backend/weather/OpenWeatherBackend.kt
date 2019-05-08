@@ -1,4 +1,4 @@
-package xyz.hetula.w.weather
+package xyz.hetula.w.backend.weather
 
 import android.content.Context
 import android.util.Log
@@ -6,13 +6,13 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.Volley
-import xyz.hetula.w.Constants
-import xyz.hetula.w.R
 import xyz.hetula.w.api.weather.Weather
-import xyz.hetula.w.util.GsonRequest
+import xyz.hetula.w.api.weather.WeatherBackend
+import xyz.hetula.w.backend.R
+import xyz.hetula.w.backend.util.GsonRequest
 import java.util.*
 
-class WeatherManager {
+class OpenWeatherBackend : WeatherBackend {
     private var mInitialized = false
     private lateinit var mApiKey: String
     private lateinit var mReqQueue: RequestQueue
@@ -49,7 +49,7 @@ class WeatherManager {
     }
 
     private fun currentWeatherUrl(apiKey: String, cityId: Long): String {
-        return String.format(Locale.ROOT, Constants.Api.CURRENT_WEATHER_API_URL, cityId, apiKey)
+        return String.format(Locale.ROOT, CURRENT_WEATHER_API_URL, cityId, apiKey)
     }
 
     private class Err : Response.ErrorListener {
@@ -59,6 +59,7 @@ class WeatherManager {
     }
 
     companion object {
-        private const val TAG = "WeatherManager"
+        private const val TAG = "OpenWeatherBackend"
+        private const val CURRENT_WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather?id=%d&APPID=%s"
     }
 }

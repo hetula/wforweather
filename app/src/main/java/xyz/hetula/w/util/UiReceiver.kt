@@ -1,4 +1,4 @@
-package xyz.hetula.w.ui
+package xyz.hetula.w.util
 
 import android.content.BroadcastReceiver
 import android.content.Context

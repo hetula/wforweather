@@ -1,15 +1,16 @@
-package xyz.hetula.w.city
+package xyz.hetula.w.backend.city
 
 import android.content.Context
 import android.util.LongSparseArray
 import androidx.core.util.set
 import com.google.gson.Gson
-import xyz.hetula.w.R
-import xyz.hetula.w.util.GsonHelper
+import xyz.hetula.w.api.city.CityBackend
+import xyz.hetula.w.backend.R
+import xyz.hetula.w.backend.util.GsonHelper
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-class CityManager {
+class OpenWeatherCityManager : CityBackend {
     private val mCities = LongSparseArray<xyz.hetula.w.api.city.City>()
 
     fun loadCitiesSync(context: Context) {

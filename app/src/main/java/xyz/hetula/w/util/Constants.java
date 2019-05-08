@@ -1,15 +1,8 @@
-package xyz.hetula.w;
+package xyz.hetula.w.util;
+
+import xyz.hetula.w.R;
 
 public class Constants {
-
-    @SuppressWarnings("unused") // Kotlin uses, lint is bad at detecting
-    public static class Api {
-        public static final String CURRENT_WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather?id=%d&APPID=%s";
-
-        private Api() {
-            throw new IllegalStateException("No instances");
-        }
-    }
 
     @SuppressWarnings("unused") // Kotlin uses, lint is bad at detecting
     public static class Pref {

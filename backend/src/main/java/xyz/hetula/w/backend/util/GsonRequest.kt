@@ -1,4 +1,4 @@
-package xyz.hetula.w.util
+package xyz.hetula.w.backend.util
 
 import com.android.volley.NetworkResponse
 import com.android.volley.ParseError
