@@ -5,4 +5,11 @@
 
     <string name="weather_notification_title">%d° %s</string>
     <string name="weather_notification_content">%s at %s</string>
+
+    <string name="default_update_interval" translatable="false">60</string>
+
+    <!-- UI Strings -->
+    <string name="ui_cities_loading">Loading cities…</string>
+    <string name="ui_select_city_to_start">Select city to start\nfollowing Weather</string>
+    <string name="ui_update_interval">Update interval</string>
 </resources>
