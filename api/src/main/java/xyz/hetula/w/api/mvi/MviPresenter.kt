@@ -39,7 +39,7 @@ abstract class MviPresenter<T : MviViewModel, S : MviView<T>> {
         viewRef?.get()?.render(viewModel)
     }
 
-    private fun dispose(disposable: () -> Disposable) {
+    protected fun dispose(disposable: () -> Disposable) {
         disposeBag.add(disposable())
     }
 }

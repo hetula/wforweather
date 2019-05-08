@@ -14,6 +14,7 @@ import xyz.hetula.w.weather.WeatherUpdateReceiver
 import xyz.hetula.w.util.Constants
 import xyz.hetula.w.backend.city.OpenWeatherCityManager
 
+@Deprecated("Pending removal")
 class CitySelecterActivity : AppCompatActivity() {
     private val mCityManager: OpenWeatherCityManager = OpenWeatherCityManager()
 
@@ -23,7 +24,7 @@ class CitySelecterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_city_selecter)
         Thread {
             val start = SystemClock.elapsedRealtime()
-            mCityManager.loadCitiesSync(applicationContext)
+            //mCityManager.loadCitiesSync(applicationContext)
             val end = SystemClock.elapsedRealtime()
             Log.d("TestingTimes", "Loaded cities in ${end - start} ms")
             val testCity = mCityManager.getCity(655194) ?: return@Thread

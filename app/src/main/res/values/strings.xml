@@ -12,4 +12,5 @@
     <string name="ui_cities_loading">Loading cities…</string>
     <string name="ui_select_city_to_start">Select city to start\nfollowing Weather</string>
     <string name="ui_update_interval">Update interval</string>
+    <string name="city_selection_list_title">Select city</string>
 </resources>

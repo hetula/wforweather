@@ -21,9 +21,11 @@ android {
 dependencies {
     implementation project(":api")
 
-    implementation "$libraries.kotlinJdk8"
+    implementation libraries.kotlinJdk8
 
-    implementation "$libraries.gson"
-    implementation "$libraries.volley"
-    implementation "$libraries.ktx"
+    implementation libraries.gson
+    implementation libraries.volley
+    implementation libraries.ktx
+
+    implementation libraries.koinAndroid
 }

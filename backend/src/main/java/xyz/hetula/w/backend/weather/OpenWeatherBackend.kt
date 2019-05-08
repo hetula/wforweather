@@ -33,6 +33,7 @@ class OpenWeatherBackend : WeatherBackend {
     }
 
     fun fetchCurrentWeather(cityId: Long, callback: (Weather) -> Unit) {
+        Log.d(TAG, "Fetching weather for: $cityId")
         if (!mInitialized) {
             Log.e(TAG, "Not initialized, no weather")
             return

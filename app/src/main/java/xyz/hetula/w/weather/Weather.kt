@@ -82,20 +82,15 @@ object Weather {
     fun setCityIdIfNotPresent(providedContext: Context, newCityId: Long) = ensureWReady {
         val context = providedContext.applicationContext
         Log.d(TAG, "Trying to set City Id: $newCityId")
-        if (mCurrentCityId == -1L) {
+        if (mCurrentCityId == -1L || mCurrentCityId != newCityId) {
             mCurrentCityId = newCityId
             storeCurrentCityId(context, mCurrentCityId)
-            if (mCurrentCityId != -1L && mLastWeather == null) {
-                Log.d(
-                    TAG,
-                    "City Id set to $mCurrentCityId, fetching weather!"
-                )
+            if (mCurrentCityId != -1L) {
+                Log.d(TAG, "City Id set to $mCurrentCityId, fetching weather!")
+                mLastWeatherFetch = -1;
                 fetchCurrentCityWeather(context)
             } else {
-                Log.w(
-                    TAG,
-                    "Not fetching weather! City ID [id: $mCurrentCityId] or Weather [w: $mLastWeather]!"
-                )
+                Log.w(TAG, "Not fetching weather! City ID [id: $mCurrentCityId]!")
             }
         } else {
             Log.d(

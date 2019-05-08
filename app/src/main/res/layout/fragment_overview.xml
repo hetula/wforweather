@@ -16,7 +16,6 @@
         android:text="@string/ui_cities_loading"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
         android:textSize="24sp"
-        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

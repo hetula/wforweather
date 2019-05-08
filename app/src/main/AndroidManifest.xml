@@ -8,6 +8,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".WApplication"
         android:fullBackupContent="@xml/backup_rules"
         android:fullBackupOnly="true"
         android:icon="@mipmap/ic_launcher"
