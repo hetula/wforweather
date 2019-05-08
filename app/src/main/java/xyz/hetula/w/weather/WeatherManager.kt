@@ -54,7 +54,7 @@ class WeatherManager {
 
     private class Err : Response.ErrorListener {
         override fun onErrorResponse(error: VolleyError?) {
-            Log.e("Dragonair", "VolleyErr: $error")
+            Log.e("W", "VolleyErr: $error")
         }
     }
 

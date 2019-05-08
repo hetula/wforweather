@@ -30,7 +30,7 @@
             android:screenOrientation="portrait" />
 
         <receiver
-            android:name="xyz.hetula.w.DragonairUpdater"
+            android:name="xyz.hetula.w.WUpdater"
             android:exported="false">
             <intent-filter>
                 <action android:name="xyz.hetula.UPDATE_WEATHER_TIMELY" />

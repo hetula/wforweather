@@ -4,7 +4,7 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import xyz.hetula.w.Dragonair
+import xyz.hetula.w.W
 import xyz.hetula.w.R
 import xyz.hetula.w.city.CityManager
 import java.lang.ref.WeakReference
@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Dragonair.initialize(applicationContext)
+        W.initialize(applicationContext)
         setContentView(R.layout.activity_main)
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, OverviewFragment())

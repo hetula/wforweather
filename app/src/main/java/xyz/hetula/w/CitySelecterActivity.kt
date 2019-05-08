@@ -15,7 +15,7 @@ class CitySelecterActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Dragonair.initialize(applicationContext)
+        W.initialize(applicationContext)
         setContentView(R.layout.activity_city_selecter)
         Thread {
             val start = SystemClock.elapsedRealtime()
@@ -28,7 +28,7 @@ class CitySelecterActivity : AppCompatActivity() {
     }
 
     private fun scheludeFirst(cityId: Long) {
-        Intent(applicationContext, DragonairUpdater::class.java).let {
+        Intent(applicationContext, WUpdater::class.java).let {
             it.action = Constants.Intents.ACTION_UPDATE_WEATHER_TIMELY
             it.putExtra("id", cityId)
             PendingIntent.getBroadcast(applicationContext, 0, it, PendingIntent.FLAG_UPDATE_CURRENT)

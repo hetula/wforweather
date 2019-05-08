@@ -14,11 +14,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_overview.view.*
 import xyz.hetula.w.Constants
-import xyz.hetula.w.DragonairUpdater
+import xyz.hetula.w.WUpdater
 import xyz.hetula.w.R
 import xyz.hetula.w.api.util.NameCorrection
 
-class OverviewFragment : DragonairFragment() {
+class OverviewFragment : WFragment() {
     private lateinit var mAlarmManager: AlarmManager
 
     private lateinit var mFabSelectCity: FloatingActionButton
@@ -48,7 +48,7 @@ class OverviewFragment : DragonairFragment() {
     }
 
     private fun scheludeFirst(cityId: Long) {
-        Intent(context!!.applicationContext, DragonairUpdater::class.java).let {
+        Intent(context!!.applicationContext, WUpdater::class.java).let {
             it.action = Constants.Intents.ACTION_UPDATE_WEATHER_TIMELY
             it.putExtra("id", cityId)
             PendingIntent.getBroadcast(context!!.applicationContext, 0, it, PendingIntent.FLAG_UPDATE_CURRENT)

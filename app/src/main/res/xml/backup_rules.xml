@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
-    <include domain="sharedpref" path="dragonair.general.xml"/>
+    <include domain="sharedpref" path="w.general.xml"/>
 </full-backup-content>

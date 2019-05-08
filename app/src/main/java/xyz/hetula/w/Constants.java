@@ -13,7 +13,7 @@ public class Constants {
 
     @SuppressWarnings("unused") // Kotlin uses, lint is bad at detecting
     public static class Pref {
-        public static final String PREF_NAME = "dragonair.general";
+        public static final String PREF_NAME = "w.general";
         public static final String KEY_CURRENT_CITY_ID = "conf.CURRENT_CITY_ID";
 
         private Pref() {

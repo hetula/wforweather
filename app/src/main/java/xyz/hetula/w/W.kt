@@ -22,8 +22,8 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
-object Dragonair {
-    private const val TAG = "DragonairInstance"
+object W {
+    private const val TAG = "WInstance"
     private val mWeatherManager: WeatherManager = WeatherManager()
     private var mInitialized: Boolean = false
 
@@ -45,16 +45,16 @@ object Dragonair {
 
     fun initialize(providedContext: Context) {
         if (mInitialized) {
-            Log.w(TAG, "DragonairInstance up and running")
+            Log.w(TAG, "WInstance up and running")
             return
         }
-        Log.d(TAG, "DragonairInstance initialized!")
+        Log.d(TAG, "WInstance initialized!")
         val context = providedContext.applicationContext
         mHandler = Handler(Looper.getMainLooper())
         mInitialized = true
         mWeatherManager.initialize(context)
         val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-        mOperationWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "dragonair:weatherupdate")
+        mOperationWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "w:weatherupdate")
 
         mLastWeatherFile = File(context.applicationContext.cacheDir, "last_weather")
         mWeatherManager.initialize(context.applicationContext)
@@ -72,13 +72,13 @@ object Dragonair {
         readLastWeather()
     }
 
-    fun release() = ensureDragonairReady {
-        Log.d(TAG, "DragonairInstance released!")
+    fun release() = ensureWReady {
+        Log.d(TAG, "WInstance released!")
         mNotificationManager.cancelAll()
         mWeatherManager.close()
     }
 
-    fun setCityIdIfNotPresent(providedContext: Context, newCityId: Long) = ensureDragonairReady {
+    fun setCityIdIfNotPresent(providedContext: Context, newCityId: Long) = ensureWReady {
         val context = providedContext.applicationContext
         Log.d(TAG, "Trying to set City Id: $newCityId")
         if (mCurrentCityId == -1L) {
@@ -95,7 +95,7 @@ object Dragonair {
         }
     }
 
-    fun fetchCurrentCityWeatherAndAllocateNewSchelude(providedContext: Context) = ensureDragonairReady {
+    fun fetchCurrentCityWeatherAndAllocateNewSchelude(providedContext: Context) = ensureWReady {
         val context = providedContext.applicationContext
         Log.d(TAG, "fetchCurrentCityWeatherAndAllocateNewSchelude called")
         // Don't care about releasing, 2 seconds is ok to hold every 1 hour cycle.
@@ -104,7 +104,7 @@ object Dragonair {
         fetchCurrentCityWeather(context)
     }
 
-    fun fetchCurrentCityWeather(providedContext: Context) = ensureDragonairReady {
+    fun fetchCurrentCityWeather(providedContext: Context) = ensureWReady {
         // TODO Network state?
         val context = providedContext.applicationContext
         Log.d(TAG, "fetchCurrentCityWeather called")
@@ -140,7 +140,7 @@ object Dragonair {
 
     private fun allocateNewScheduledUpdate(context: Context) {
         Log.d(TAG, "allocateNewScheduledUpdate called")
-        val updateIntent = Intent(context, DragonairUpdater::class.java).let {
+        val updateIntent = Intent(context, WUpdater::class.java).let {
             it.action = Constants.Intents.ACTION_UPDATE_WEATHER_TIMELY
             PendingIntent.getBroadcast(context, 45, it, 0)
         }
@@ -217,7 +217,7 @@ object Dragonair {
         val weatherConditionsIconRes = WeatherIconMapper.mapWeatherToIconRes(weatherData?.icon, night)
         val bitmap = AppCompatResources.getDrawable(context, weatherConditionsIconRes)!!.toBitmap()
 
-        val pendingContentIntent = Intent(context, DragonairUpdater::class.java).let {
+        val pendingContentIntent = Intent(context, WUpdater::class.java).let {
             it.action = Constants.Intents.ACTION_UPDATE_WEATHER
             PendingIntent.getBroadcast(context, 44, it, PendingIntent.FLAG_UPDATE_CURRENT)
         }
@@ -276,11 +276,11 @@ object Dragonair {
         return hour > 19 || hour < 6
     }
 
-    private inline fun ensureDragonairReady(function: () -> Unit) {
+    private inline fun ensureWReady(function: () -> Unit) {
         if (mInitialized) {
             function()
         } else {
-            Log.w(TAG, "Dragonair instance is not initialized! Init now!")
+            Log.w(TAG, "W instance is not initialized! Init now!")
         }
     }
 
