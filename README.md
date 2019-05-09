@@ -1,3 +1,3 @@
-# Dragonair Weather
+# W for Weather
 
 Simple weather app
